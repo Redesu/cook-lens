@@ -7,6 +7,7 @@ export default function ResultsPage() {
     const searchParams = useSearchParams();
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isSavingRecipe, setIsSavingRecipe] = useState<string | false>(false);
 
     useEffect(() => {
         const ingredients = searchParams.get("ingredients");
@@ -24,6 +25,18 @@ export default function ResultsPage() {
             setLoading(false);
         }, 2000);
     };
+
+    const saveRecipe = (recipe: Recipe) => {
+        setIsSavingRecipe(recipe.id);
+
+        // simulating async api call for now
+        setTimeout(() => {
+            setIsSavingRecipe(false);
+            alert(`Recipe "${recipe.title}" saved!`);
+            // commenting out redirect for now
+            // redirect(`/results/${recipe.id}`);
+        }, 500);
+    }
 
     return (
         <div className="min-h-screen flex flex-coltext-white">
@@ -89,6 +102,18 @@ export default function ResultsPage() {
                                     <p className="text-sm leading-relaxed text-gray-300">
                                         {recipe.instructions}
                                     </p>
+                                </div>
+                                <div className="mt-4">
+                                    <button
+                                        className={`w-full bg-indigo-600 text-white py-2 rounded-lg text-lg font-semibold transition ${isSavingRecipe === recipe.id
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : 'cursor-pointer hover:bg-indigo-700'
+                                            }`}
+                                        onClick={() => saveRecipe(recipe)}
+                                        disabled={isSavingRecipe === recipe.id}
+                                    >
+                                        {isSavingRecipe === recipe.id ? 'Saving...' : 'Save Recipe'}
+                                    </button>
                                 </div>
                             </div>
                         ))}

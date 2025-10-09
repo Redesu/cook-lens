@@ -8,6 +8,12 @@ export default function Home() {
 
   const handleGenerateRecipes = () => {
     if (!ingredients) return
+    const generateButton = document.querySelector('.generate-recipes-button');
+    if (generateButton) {
+      generateButton.textContent = 'Generating...';
+      generateButton.setAttribute('disabled', 'true');
+      generateButton.classList.add('opacity-50', 'cursor-not-allowed');
+    }
     const query = encodeURIComponent(ingredients)
     router.push(`/results?ingredients=${query}`)
   }
@@ -45,9 +51,14 @@ export default function Home() {
             className="w-full border rounded-lg p-4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleGenerateRecipes();
+              }
+            }}
           />
           <button
-            className="w-full bg-blue-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 cursor-pointer"
+            className="w-full bg-blue-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 cursor-pointer generate-recipes-button"
             onClick={handleGenerateRecipes}
           >
             Generate Recipes
