@@ -1,9 +1,12 @@
 'use client'
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Recipe, sampleRecipes } from "../lib/mockData";
+import { Recipe, sampleRecipes } from "../../lib/mockData";
+import getDifficultyColor from "@/utils/getDifficultyColor";
+import { useRouter } from "next/navigation";
 
 export default function ResultsPage() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
@@ -33,8 +36,7 @@ export default function ResultsPage() {
         setTimeout(() => {
             setIsSavingRecipe(false);
             alert(`Recipe "${recipe.title}" saved!`);
-            // commenting out redirect for now
-            // redirect(`/results/${recipe.id}`);
+            router.push(`/recipe/${recipe.id}`);
         }, 500);
     }
 
@@ -77,9 +79,7 @@ export default function ResultsPage() {
                                     </p>
                                     <p>
                                         Difficulty:<span className={`font-semibold ml-1 
-                                        ${recipe.difficulty === '⭐' ? 'text-green-400' :
-                                                recipe.difficulty === '⭐⭐' ? 'text-yellow-400' :
-                                                    'text-red-400'}`
+                                        ${getDifficultyColor(recipe.difficulty)}}`
                                         }>
                                             {recipe.difficulty}
                                         </span>
