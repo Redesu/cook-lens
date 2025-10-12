@@ -1,0 +1,1 @@
+// TODO: Make a function that handles the collection of images

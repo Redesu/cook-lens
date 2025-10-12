@@ -1,6 +1,9 @@
+'use client';
+import handleSignIn from "@/hooks/handleSignIn";
+
 export default function GoogleLoginButton() {
     return (
-        <button className="gsi-material-button w-full ">
+        <button className="gsi-material-button w-full " onClick={() => handleSignIn("google")}>
             <div className="gsi-material-button-state"></div>
             <div className="gsi-material-button-content-wrapper">
                 <div className="gsi-material-button-icon">

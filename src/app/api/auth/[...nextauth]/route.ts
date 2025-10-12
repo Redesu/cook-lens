@@ -1,8 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-import { signIn } from "next-auth/react";
-import { insertUser } from "@/lib/queries";
+import { upsertUser } from "@/lib/queries";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -20,9 +19,16 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         async signIn({ user }) {
+            if (!user.email) {
+                console.error("No email found for user:", user);
+                return false;
+            }
             try {
-                // already handling duplicate emails with a unique constraint in the DB
-                await insertUser(user.name!, user.email!, user.image!);
+                await upsertUser(
+                    user.name || '',
+                    user.email!,
+                    user.image || undefined
+                );
                 return true;
             } catch (error) {
                 console.error("Error in signIn callback:", error);

@@ -4,13 +4,17 @@ import { useEffect, useState } from "react";
 import { Recipe, sampleRecipes } from "../../lib/mockData";
 import getDifficultyColor from "@/utils/getDifficultyColor";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function ResultsPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { data: session } = useSession();
+
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
     const [isSavingRecipe, setIsSavingRecipe] = useState<string | false>(false);
+
 
     useEffect(() => {
         const ingredients = searchParams.get("ingredients");
@@ -30,6 +34,11 @@ export default function ResultsPage() {
     };
 
     const saveRecipe = (recipe: Recipe) => {
+        if (!session) {
+            alert("Please log in to save recipes.");
+            router.push("/login");
+            return;
+        }
         setIsSavingRecipe(recipe.id);
 
         // simulating async api call for now
@@ -110,13 +119,14 @@ export default function ResultsPage() {
                                     </p>
                                 </div>
                                 <div className="mt-4">
+                                    {!session && <p className="text-sm text-gray-400 mb-2">Please log in to save recipes.</p>}
                                     <button
-                                        className={`w-full bg-indigo-600 text-white py-2 rounded-lg text-lg font-semibold transition ${isSavingRecipe === recipe.id
+                                        className={`w-full bg-indigo-600 text-white py-2 rounded-lg text-lg font-semibold transition ${isSavingRecipe === recipe.id || !session
                                             ? 'opacity-50 cursor-not-allowed'
                                             : 'cursor-pointer hover:bg-indigo-700'
                                             }`}
                                         onClick={() => saveRecipe(recipe)}
-                                        disabled={isSavingRecipe === recipe.id}
+                                        disabled={!session || isSavingRecipe !== false}
                                     >
                                         {isSavingRecipe === recipe.id ? 'Saving...' : 'Save Recipe'}
                                     </button>

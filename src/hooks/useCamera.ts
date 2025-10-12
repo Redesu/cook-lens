@@ -1,0 +1,1 @@
+// TODO: make a function that handles camera access and photo capture
