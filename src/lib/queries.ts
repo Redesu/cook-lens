@@ -4,9 +4,16 @@ import { Recipe, User, SavedRecipe } from "@/types";
 
 export function insertUser(user: User['name'], email: User['email'], avatar_url?: User['avatar_url']) {
     return db.query(
-        `INSERT INTO users (name, email, avatar_url) VALUES ($1, $2, $3) RETURNING *`,
+        `INSERT INTO users
+         (name, email, avatar_url) 
+         VALUES ($1, $2, $3) ON CONFLICT (email) DO NOTHING
+        RETURNING *`,
         [user, email, avatar_url]
     );
+}
+
+export function getUserByEmail(email: User['email']) {
+    return db.query("SELECT * FROM users WHERE email = $1", [email]);
 }
 
 export function updateUser(id: User['id'], name: User['name'], email: User['email'], avatar_url?: User['avatar_url']) {

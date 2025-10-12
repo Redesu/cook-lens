@@ -2,6 +2,7 @@ CREATE TABLE users (
 	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	email VARCHAR(100) NOT NULL,
 	created_at TIMESTAMP NOT NULL
+	CONSTRAINT users_email_unique UNIQUE (email)
 )
 
 CREATE TABLE recipes (
