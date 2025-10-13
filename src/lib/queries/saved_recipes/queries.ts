@@ -20,3 +20,13 @@ export function getUserSavedRecipes(user_id: User['id']) {
         ORDER BY saved_recipes.saved_at DESC`, [user_id]
     );
 }
+
+export function getRandomSavedRecipe() {
+    return db.query(
+        `SELECT DISTINCT r.* FROM recipes r
+        INNER JOIN saved_recipes ON r.id = saved_recipes.recipe_id
+        ORDER BY RANDOM()
+        LIMIT 1
+        `
+    )
+}

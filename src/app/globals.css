@@ -141,3 +141,7 @@ body {
 .gsi-material-button-github .gsi-material-button-contents {
   color: #FFFFFF !important;
 }
+
+.lucide {
+  cursor: pointer;
+}
