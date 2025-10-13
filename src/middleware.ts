@@ -9,8 +9,14 @@ export async function middleware(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET,
     });
 
-    if (token) {
+    const { pathname } = request.nextUrl;
+
+    if (pathname === '/login' && token) {
         return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    if (pathname.startsWith('/api/recipes') && !token) {
+        return NextResponse.redirect(new URL('/login', request.url));
     }
 
     return NextResponse.next();
