@@ -10,7 +10,7 @@ export function getRecipeById(id: string): Promise<Recipe | null> {
     return result.then(res => res.rows[0] || null);
 }
 
-export function insertRecipe(recipe: Recipe, user_id: User["id"]) {
+export function insertRecipe(recipe: Omit<Recipe, 'id' | 'user_id' | 'created_at'>, user_id: User["id"]) {
     const { title, ingredients, instructions, cook_time, difficulty, image_url, prep_time, servings, description } = recipe;
     return db.query(
         `INSERT INTO recipes 

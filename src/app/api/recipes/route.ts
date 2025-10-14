@@ -1,16 +1,20 @@
 import { getAllRecipes, getRecipeById, insertRecipe } from "@/lib/queries";
 import { NextResponse } from "next/server";
+import { requireAuth } from "@/utils/requireAuth";
 
 export async function POST(request: Request) {
     try {
         const data = await request.json();
-
-        const createRecipe = await insertRecipe(data.recipe, data.user_id);
+        const userId = await requireAuth();
+        if (!userId) {
+            throw new Error("User ID is undefined");
+        }
+        const createRecipe = await insertRecipe(data.recipe, userId);
 
         return NextResponse.json(createRecipe.rows[0]);
     } catch (e) {
         console.error(e);
-        return NextResponse.json({ error: 'Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Error while creating recipe' }, { status: 500 });
     }
 }
 
@@ -35,6 +39,6 @@ export async function GET(request: Request) {
 
     } catch (e) {
         console.error(e);
-        return new Response(JSON.stringify({ error: 'Error' }), { status: 500 });
+        return new Response(JSON.stringify({ error: 'Error while getting recipes' }), { status: 500 });
     }
 }

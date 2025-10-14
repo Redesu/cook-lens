@@ -2,7 +2,7 @@ import db from "@/lib/db";
 import { User } from "@/types";
 
 export function upsertUser(username: User['username'], email: User['email'], avatar_url?: User['avatar_url']) {
-    return db.query(
+    const user = db.query(
         `INSERT INTO users
          (username, email, avatar_url, created_at) 
          VALUES ($1, $2, $3, CURRENT_TIMESTAMP) ON CONFLICT (email)
@@ -13,6 +13,8 @@ export function upsertUser(username: User['username'], email: User['email'], ava
         RETURNING *`,
         [username, email, avatar_url]
     );
+
+    return user;
 }
 
 export function getUserByEmail(email: User['email']) {

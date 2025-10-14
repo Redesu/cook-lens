@@ -1,5 +1,5 @@
 "use client"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useCamera } from "@/hooks/useCamera";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -7,11 +7,17 @@ import { useImageGallery } from "@/hooks/useImageGallery";
 import { CameraIcon, UploadIcon, X } from "lucide-react";
 import OpenCameraModal from "@/components/OpenCameraModal";
 import ImageCanva from "@/components/ImageCanva";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Home() {
   // TODO: after user uploads the image, let gemini vision extract the ingredients and display on the input text
   const router = useRouter();
   const [ingredients, setIngredients] = useState("")
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [error, setError] = useState<String | null>(null)
+
+  const ingredientsInputRef = useRef<HTMLInputElement>(null);
+
 
   const camera = useCamera();
   const fileUpload = useFileUpload();
@@ -23,6 +29,7 @@ export default function Home() {
     const imageUrl = camera.capturePhoto();
     if (imageUrl) {
       gallery.setCapturedImage(imageUrl);
+      await analyzeImage(imageUrl);
     }
   };
 
@@ -30,9 +37,41 @@ export default function Home() {
     const imageUrl = await fileUpload.handleFileUpload(e);
     if (imageUrl) {
       gallery.setUploadedImage(imageUrl);
+      await analyzeImage(imageUrl);
     }
   }
 
+  const analyzeImage = async (imageUrl: string) => {
+    setIsAnalyzing(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/ai/analyze-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image: imageUrl }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze image');
+      }
+
+      const data = await response.json();
+      setIngredients(data.ingredients);
+
+      setTimeout(() => {
+        ingredientsInputRef.current?.focus();
+      }, 100);
+
+    } catch (error) {
+      console.error(error);
+      setError('Failed to analyze image');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }
 
   const handleGenerateRecipes = () => {
     if (!hasIngredients) return
@@ -46,9 +85,17 @@ export default function Home() {
     router.push(`/results?ingredients=${query}`)
   }
 
+
   // TODO: get random recipe from API
   const getRandomRecipe = () => {
   }
+
+  useEffect(() => {
+    if (ingredientsInputRef.current) {
+      const length = ingredients.length;
+      ingredientsInputRef.current.setSelectionRange(length, length);
+    }
+  }, [ingredients])
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -61,12 +108,14 @@ export default function Home() {
         </p>
 
         <div className="w-full max-w-md space-y-4">
-          <button className="w-full bg-blue-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 cursor-pointer" onClick={camera.openCamera}>
+          <button className="w-full bg-blue-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={camera.openCamera} disabled={isAnalyzing}>
             <CameraIcon className="inline-block mr-2" />
             Open Camera
           </button>
 
-          <button className="w-full border-2 border-blue-600 text-blue-600 py-4 rounded-lg text-lg font-semibold cursor-pointer" onClick={fileUpload.triggerFileInput}>
+          <button className="w-full border-2 border-blue-600 text-blue-600 py-4 rounded-lg text-lg font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={fileUpload.triggerFileInput} disabled={isAnalyzing}>
             <UploadIcon className="inline-block mr-2" />
             Upload Photo
           </button>
@@ -87,12 +136,25 @@ export default function Home() {
             onCapture={handleCameraCapture}
           />
 
-          <ImageCanva
-            capturedImage={gallery.capturedImage}
-            uploadedImage={gallery.uploadedImage}
-            onRemoveCaptured={() => gallery.setCapturedImage(null)}
-            onRemoveUploaded={() => gallery.setUploadedImage(null)}
-          />
+          {/* Add flex and justify-center to center the ImageCanva */}
+          <div className="flex justify-center items-center space-x-2">
+            <ImageCanva
+              capturedImage={gallery.capturedImage}
+              uploadedImage={gallery.uploadedImage}
+              onRemoveCaptured={() => gallery.setCapturedImage(null)}
+              onRemoveUploaded={() => gallery.setUploadedImage(null)}
+            />
+          </div>
+
+          {/* Add flex and justify-center to center the analyzing message */}
+          {isAnalyzing && (
+            <div className="flex justify-center items-center space-x-2">
+              <LoadingSpinner />
+              <p className="text-green-600">Analyzing image...</p>
+            </div>
+          )}
+
+          {error && <p className="text-red-500">{error}</p>}
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -104,6 +166,7 @@ export default function Home() {
           </div>
 
           <input
+            ref={ingredientsInputRef}
             type="text"
             placeholder="Type ingredients (e.g., chicken, rice, tomatoes)"
             className="w-full border rounded-lg p-4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -117,10 +180,10 @@ export default function Home() {
             }}
           />
           <button
-            className="w-full bg-blue-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 cursor-pointer generate-recipes-button"
-            onClick={handleGenerateRecipes}
+            className="w-full bg-blue-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 cursor-pointer generate-recipes-button disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleGenerateRecipes} disabled={isAnalyzing}
           >
-            Generate Recipes
+            {isAnalyzing ? 'Analyzing...' : 'Generate Recipes'}
           </button>
         </div>
 

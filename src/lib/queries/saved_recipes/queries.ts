@@ -1,8 +1,8 @@
 import db from "@/lib/db";
 import { SavedRecipe, User } from "@/types";
 
-export function insertSaveRecipe(savedRecipe: SavedRecipe) {
-    const { user_id, recipe_id } = savedRecipe;
+export function insertSaveRecipe(savedRecipe: SavedRecipe, user_id: User['id']) {
+    const { recipe_id } = savedRecipe;
     return db.query(
         `INSERT INTO saved_recipes 
         (user_id, recipe_id, saved_at) 

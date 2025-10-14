@@ -24,17 +24,30 @@ export const authOptions: NextAuthOptions = {
                 return false;
             }
             try {
-                await upsertUser(
+                const dbUser = await upsertUser(
                     user.name || '',
                     user.email!,
                     user.image || undefined
                 );
+                user.id = dbUser.rows[0]?.id;
                 return true;
             } catch (error) {
                 console.error("Error in signIn callback:", error);
                 return false;
             }
         },
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (session.user) {
+                session.user.id = token.id as string;
+            }
+            return session;
+        }
     }
 }
 
