@@ -14,6 +14,7 @@ export default function ResultsPage() {
 
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [isSavingRecipe, setIsSavingRecipe] = useState<string | false>(false);
 
 
@@ -26,16 +27,42 @@ export default function ResultsPage() {
         generateRecipes(ingredients);
     }, [searchParams]);
 
-    // using mock data for now
-    const generateRecipes = (ingredients: string) => {
+    const generateRecipes = async (ingredients: string) => {
         setLoading(true);
-        setTimeout(() => {
-            setRecipes(sampleRecipes);
+        setError(null);
+
+        try {
+            const response = await fetch('/api/ai/generate-recipes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ingredients }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate recipes');
+            }
+
+            const data = await response.json();
+
+            const recipesWithTempIds = data.map((recipe: any, index: number) => ({
+                id: `temp-${Date.now()}-${index}`,
+                ...recipe
+            }));
+
+            setRecipes(recipesWithTempIds);
+
+        } catch (error) {
+            console.error(error);
+            setError('Failed to generate recipes');
+        } finally {
             setLoading(false);
-        }, 2000);
+        }
     };
 
-    const saveRecipe = (recipe: Recipe) => {
+    const saveRecipe = async (recipe: Recipe) => {
+        setError(null);
         if (!session) {
             alert("Please log in to save recipes.");
             router.push("/login");
@@ -43,12 +70,29 @@ export default function ResultsPage() {
         }
         setIsSavingRecipe(recipe.id);
 
-        // simulating async api call for now
-        setTimeout(() => {
+        try {
+            const { id, ...recipeData } = recipe;
+
+            const response = await fetch('/api/saved_recipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ saved_recipe: recipeData }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save recipe');
+            }
+
+            const data = await response.json();
+            router.push(`/saved_recipe/${data.id}`);
+        } catch (error) {
+            console.error(error);
+            setError('Failed to save recipe');
+        } finally {
             setIsSavingRecipe(false);
-            alert(`Recipe "${recipe.title}" saved!`);
-            router.push(`/recipe/${recipe.id}`);
-        }, 500);
+        }
     }
 
     return (
@@ -57,13 +101,14 @@ export default function ResultsPage() {
                 <h2 className="text-4xl text-center mb-8">
                     Recipe Ideas
                 </h2>
+                {error && <p className="text-center text-lg text-red-500">{error}</p>}
                 <h3 className="text-2xl text-center mb-4">Ingredients: {searchParams.get("ingredients")}</h3>
                 {loading ? (
                     <div className="flex flex-col items-center space-y-4">
                         <LoadingSpinner />
                         <p className="text-center text-lg text-gray-400">Loading delicious ideas...</p>
                     </div>
-                ) : recipes.length === 0 ? (
+                ) : recipes.length === 0 || recipes === undefined ? (
                     <p className="text-center text-lg text-gray-400">
                         No recipes found. Try different ingredients.
                     </p>
