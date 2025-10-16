@@ -1,14 +1,7 @@
-import { Recipe } from "@/types";
 import { insertRecipe } from "./queries";
 
-export async function saveGeneratedRecipes(aiText: string, userId: string) {
+export async function saveGeneratedRecipes(aiRecipes: any[], userId: string) {
     try {
-        const jsonMatch = aiText.match(/\[[\s\S]*\]/);
-        if (!jsonMatch) {
-            throw new Error('No JSON found in AI response');
-        }
-
-        const aiRecipes = JSON.parse(jsonMatch[0]);
 
         const recipes = aiRecipes.map((r: any) => ({
             title: r.title,
@@ -18,10 +11,12 @@ export async function saveGeneratedRecipes(aiText: string, userId: string) {
             prep_time: r.prepTime,
             cook_time: r.cookTime,
             servings: r.servings,
+            image_url: r.image_url,
             difficulty: r.difficulty || '⭐⭐',
         }));
+
         const results = await Promise.all(
-            recipes.map((recipe: Omit<Recipe, "id" | "user_id" | "created_at">) => insertRecipe(recipe, userId))
+            recipes.map((recipe) => insertRecipe(recipe, userId))
         );
 
         return results;

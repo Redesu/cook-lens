@@ -46,12 +46,7 @@ export default function ResultsPage() {
 
             const data = await response.json();
 
-            const recipesWithTempIds = data.map((recipe: any, index: number) => ({
-                id: `temp-${Date.now()}-${index}`,
-                ...recipe
-            }));
-
-            setRecipes(recipesWithTempIds);
+            setRecipes(data.recipes);
 
         } catch (error) {
             console.error(error);
@@ -70,23 +65,22 @@ export default function ResultsPage() {
         }
         setIsSavingRecipe(recipe.id);
 
+        const recipeId = recipe.id
+
         try {
-            const { id, ...recipeData } = recipe;
 
             const response = await fetch('/api/saved_recipe', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ saved_recipe: recipeData }),
+                body: JSON.stringify({ recipe_id: recipeId }),
             });
 
             if (!response.ok) {
                 throw new Error('Failed to save recipe');
             }
-
-            const data = await response.json();
-            router.push(`/saved_recipe/${data.id}`);
+            router.push(`/recipe/${recipe.id}`);
         } catch (error) {
             console.error(error);
             setError('Failed to save recipe');
@@ -135,7 +129,7 @@ export default function ResultsPage() {
 
                                 <div className="space-y-1 mb-4 text-sm text-gray-300">
                                     <p>
-                                        Cook Time: <span className="font-medium text-white">{recipe.cookTime} minutes</span>
+                                        Cook Time: <span className="font-medium text-white">{recipe.cook_time} minutes</span>
                                     </p>
                                     <p>
                                         Difficulty:<span className={`font-semibold ml-1 

@@ -1,9 +1,15 @@
 'use client';
 import handleSignIn from "@/hooks/handleSignIn";
+import { useState } from "react";
 
 export default function GithubLoginButtion() {
+    const [loading, setLoading] = useState(false);
+    const handleGithubLogin = () => {
+        setLoading(true);
+        handleSignIn("github");
+    }
     return (
-        <button className="gsi-material-button w-full mt-4 gsi-material-button gsi-material-button-github w-full" onClick={() => handleSignIn("github")}>
+        <button className="gsi-material-button w-full mt-4 gsi-material-button gsi-material-button-github w-full disabled:opacity-50 cursor-not-allowed" onClick={() => handleGithubLogin()} disabled={loading}>
             <div className="gsi-material-button-state"></div>
             <div className="gsi-material-button-content-wrapper">
                 <div className="gsi-material-button-icon">

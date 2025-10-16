@@ -37,7 +37,6 @@ export async function POST(request: Request) {
 
         const text = response.text;
 
-        console.log('response', response);
         return NextResponse.json({
             success: true,
             ingredients: text

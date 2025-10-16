@@ -1,7 +1,7 @@
 CREATE TABLE users (
 	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	email VARCHAR(100) NOT NULL,
-	created_at TIMESTAMP NOT NULL
+	created_at TIMESTAMP NOT NULL,
 	CONSTRAINT users_email_unique UNIQUE (email)
 )
 
@@ -13,7 +13,7 @@ CREATE TABLE recipes (
 	instructions TEXT NOT NULL,
 	cook_time INTEGER NOT NULL,
 	difficulty VARCHAR(50) NOT NULL,
-	image_url VARCHAR(200),
+	image_url TEXT,
 	created_at TIMESTAMP NOT NULL,
 	CONSTRAINT fk_user_id
 		FOREIGN KEY(user_id)

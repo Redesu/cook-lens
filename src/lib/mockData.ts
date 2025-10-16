@@ -3,8 +3,8 @@ export interface Recipe {
     title: string;
     description: string;
     imageUrl?: string;
-    cookTime: number;
-    prepTime: number;
+    cook_time: number;
+    prep_time: number;
     servings: number;
     difficulty: '⭐' | '⭐⭐' | '⭐⭐⭐';
     ingredients: string[];
@@ -16,8 +16,8 @@ export const sampleRecipes: Recipe[] = [
         id: '1',
         title: 'Spaghetti Bolognese',
         description: 'A classic Italian pasta dish with rich meat sauce.',
-        cookTime: 45,
-        prepTime: 15,
+        cook_time: 45,
+        prep_time: 15,
         servings: 4,
         difficulty: '⭐⭐',
         ingredients: ['Spaghetti', 'Ground Beef', 'Tomato Sauce', 'Onion', 'Garlic'],
@@ -27,8 +27,8 @@ export const sampleRecipes: Recipe[] = [
         id: '2',
         title: 'Chicken Stir Fry',
         description: 'A quick and healthy chicken stir fry with vegetables.',
-        cookTime: 30,
-        prepTime: 15,
+        cook_time: 30,
+        prep_time: 15,
         servings: 2,
         difficulty: '⭐',
         ingredients: ['Chicken Breast', 'Mixed Vegetables', 'Soy Sauce', 'Garlic', 'Ginger'],
@@ -38,8 +38,8 @@ export const sampleRecipes: Recipe[] = [
         id: '3',
         title: 'Vegetable Curry',
         description: 'A flavorful and aromatic vegetable curry with coconut milk.',
-        cookTime: 40,
-        prepTime: 10,
+        cook_time: 40,
+        prep_time: 10,
         servings: 4,
         difficulty: '⭐⭐⭐',
         ingredients: ['Mixed Vegetables', 'Coconut Milk', 'Curry Powder', 'Onion', 'Garlic'],

@@ -12,13 +12,14 @@ export function getRecipeById(id: string): Promise<Recipe | null> {
 
 export function insertRecipe(recipe: Omit<Recipe, 'id' | 'user_id' | 'created_at'>, user_id: User["id"]) {
     const { title, ingredients, instructions, cook_time, difficulty, image_url, prep_time, servings, description } = recipe;
+    const ingredientsJson = JSON.stringify(ingredients);
     return db.query(
         `INSERT INTO recipes 
         (title, ingredients, instructions, cook_time, 
         difficulty, image_url, prep_time, servings, description, 
-        user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+        user_id, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP) 
         RETURNING *`,
-        [title, ingredients, instructions, cook_time, difficulty, image_url, prep_time, servings, description, user_id]
+        [title, ingredientsJson, instructions, cook_time, difficulty, image_url, prep_time, servings, description, user_id]
     );
 }
 

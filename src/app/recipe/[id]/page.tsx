@@ -9,14 +9,27 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const loadRecipeById = (id: string) => {
-        // simulating api fetch call
-        setTimeout(() => {
-            const recipe = sampleRecipes.find((r) => r.id === id) || null;
-            setRecipe(recipe);
+    const loadRecipeById = async (id: string) => {
+        setLoading(true);
+        try {
+            const response = await fetch('/api/saved_recipe?id=' + id, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to get recipe');
+            }
+
+            const data = await response.json();
+            setRecipe(data[0]);
+        } catch (error) {
+            console.error(error);
+        } finally {
             setLoading(false);
-            return recipe;
-        }, 1000);
+        }
     }
 
     useEffect(() => {
@@ -73,7 +86,7 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
                             <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-700/50 p-4 rounded-xl mb-10 shadow-inner border border-gray-600">
                                 <div className="flex space-x-6 sm:space-x-10 text-center mb-4 sm:mb-0">
                                     <div className="flex flex-col">
-                                        <span className="text-2xl font-bold text-white">{recipe.cookTime + recipe.prepTime} min</span>
+                                        <span className="text-2xl font-bold text-white">{recipe.cook_time + recipe.prep_time} min</span>
                                         <span className="text-xs text-gray-400">Total Time</span>
                                     </div>
                                     <div className="flex flex-col">
@@ -81,9 +94,14 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
                                         <span className="text-xs text-gray-400">Servings</span>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-2xl font-bold text-white">{recipe.prepTime} min</span>
+                                        <span className="text-2xl font-bold text-white">{recipe.prep_time} min</span>
                                         <span className="text-xs text-gray-400">Prep Time</span>
                                     </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-2xl font-bold text-white">{recipe.cook_time} min</span>
+                                        <span className="text-xs text-gray-400">Cook Time</span>
+                                    </div>
+
                                 </div>
                             </div>
 

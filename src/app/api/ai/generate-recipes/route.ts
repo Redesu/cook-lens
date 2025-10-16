@@ -64,10 +64,23 @@ export async function POST(request: Request) {
         const parsedRecipes = JSON.parse(cleanedText);
 
         if (userId) {
-            await saveGeneratedRecipes(cleanedText, userId);
-        }
+            const savedRecipes = await saveGeneratedRecipes(parsedRecipes, userId);
 
-        return NextResponse.json(parsedRecipes);
+            if (!savedRecipes) {
+                throw new Error('Failed to save recipes');
+            }
+
+            return NextResponse.json({
+                recipes: savedRecipes.map(result => result.rows[0])
+            });
+        } else {
+            return NextResponse.json({
+                recipes: parsedRecipes.map((recipe: any, index: number) => ({
+                    id: `temp-${Date.now()}-${index}`,
+                    ...recipe
+                }))
+            });
+        };
 
 
     } catch (e) {

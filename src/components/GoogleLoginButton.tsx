@@ -1,9 +1,16 @@
 'use client';
 import handleSignIn from "@/hooks/handleSignIn";
+import { useState } from "react";
 
 export default function GoogleLoginButton() {
+    const [loading, setLoading] = useState(false);
+
+    const handleGoogleLogin = () => {
+        setLoading(true);
+        handleSignIn("google");
+    }
     return (
-        <button className="gsi-material-button w-full " onClick={() => handleSignIn("google")}>
+        <button className="gsi-material-button w-full disabled:opacity-50 cursor-not-allowed" onClick={() => handleGoogleLogin()} disabled={loading}>
             <div className="gsi-material-button-state"></div>
             <div className="gsi-material-button-content-wrapper">
                 <div className="gsi-material-button-icon">
