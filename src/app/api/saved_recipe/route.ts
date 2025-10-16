@@ -35,11 +35,16 @@ export async function GET(request: Request) {
         }
 
         const randomSavedRecipe = await getRandomSavedRecipe();
+
+        if (!randomSavedRecipe.rows || randomSavedRecipe.rows.length === 0) {
+            return NextResponse.json({ error: 'No saved recipes found' }, { status: 404 });
+        }
+
         const recipeId = randomSavedRecipe.rows[0].id;
 
         return NextResponse.json(recipeId, { status: 200 });
     } catch (e) {
         console.error(e);
-        return NextResponse.json({ error: 'Error while getting saved recipe' }, { status: 500 });
+        return NextResponse.json({ error: 'Error while getting saved recipe:' }, { status: 500 });
     }
 }

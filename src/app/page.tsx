@@ -10,11 +10,10 @@ import ImageCanva from "@/components/ImageCanva";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Home() {
-  // TODO: after user uploads the image, let gemini vision extract the ingredients and display on the input text
   const router = useRouter();
   const [ingredients, setIngredients] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingRandomRecipe, setIsLoadingRandomRecipe] = useState(false)
   const [error, setError] = useState<String | null>(null)
 
   const ingredientsInputRef = useRef<HTMLInputElement>(null);
@@ -87,10 +86,9 @@ export default function Home() {
   }
 
 
-  // TODO: get random recipe from API
   const getRandomRecipe = async () => {
     setError(null);
-    setIsLoading(true);
+    setIsLoadingRandomRecipe(true);
     try {
       const response = await fetch('/api/saved_recipe', {
         method: 'GET',
@@ -98,18 +96,21 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
       });
+      const data = await response.json();
+
+      console.log('Response status:', response.status);
+      console.log('Response data:', data);
 
       if (!response.ok) {
-        throw new Error('Failed to get recipe');
+        throw new Error(data.error || 'Failed to get random recipe');
       }
 
-      const data = await response.json();
       router.push(`/recipe/${data}`);
     } catch (error) {
       console.error(error);
-      setError('Failed to get recipe');
+      setError(error instanceof Error ? error.message : 'Failed to get random recipe')
     } finally {
-      setIsLoading(false);
+      setIsLoadingRandomRecipe(false);
     }
   }
 
@@ -210,7 +211,7 @@ export default function Home() {
           </button>
         </div>
 
-        <button className="mt-8 text-blue-600 underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={getRandomRecipe} disabled={isLoading}>
+        <button className="mt-8 text-blue-600 underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={getRandomRecipe} disabled={isLoadingRandomRecipe}>
           See sample recipe →
         </button>
       </main>
