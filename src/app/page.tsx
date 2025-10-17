@@ -98,7 +98,7 @@ export default function Home() {
       });
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || response.status === 404) {
         throw new Error(data.error || 'Failed to get random recipe');
       }
 

@@ -1,7 +1,7 @@
 'use client'
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Recipe, sampleRecipes } from "../../lib/mockData";
+import { Recipe } from "../../lib/mockData";
 import getDifficultyColor from "@/utils/getDifficultyColor";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";

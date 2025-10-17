@@ -1,7 +1,10 @@
 CREATE TABLE users (
 	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	username VARCHAR(100) NOT NULL,
 	email VARCHAR(100) NOT NULL,
+	avatar_url TEXT,
 	created_at TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP,
 	CONSTRAINT users_email_unique UNIQUE (email)
 )
 

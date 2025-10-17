@@ -1,6 +1,5 @@
-import { Recipe, sampleRecipes } from "@/lib/mockData";
+import { Recipe } from "@/lib/mockData";
 import getDifficultyColor from "@/utils/getDifficultyColor";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { notFound } from "next/navigation";
 
 async function getRecipe(id: string): Promise<Recipe> {
@@ -18,6 +17,7 @@ async function getRecipe(id: string): Promise<Recipe> {
 
 
 export default async function savedRecipePage({ params }: { params: Promise<{ id: string }> }) {
+    // TODO: Add share button (just copy link), edit image button on button
     const { id } = await params;
     const recipe = await getRecipe(id);
 

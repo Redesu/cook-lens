@@ -1,9 +1,16 @@
 'use client'
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Header() {
     const { data: session, status } = useSession();
+    const [disabled, setDisabled] = useState(false);
+
+    const handleAuthenticationButtonClick = () => {
+        setDisabled(true);
+        signOut({ callbackUrl: "/login" });
+    };
 
     return (
         <header className="p-4 flex justify-between items-center">
@@ -53,23 +60,27 @@ export default function Header() {
                                 className="w-8 h-8 rounded-full"
                             />
                         )}
-                        <span className="text-sm font-medium">
-                            {session.user?.name || session.user?.email}
-                        </span>
+                        <Link href='/profile'>
+                            <span className="text-sm font-medium hover:underline cursor-pointer">
+                                {session.user?.name || session.user?.email}
+                            </span>
+                        </Link>
                         <button
                             className="bg-red-500 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-600 transition-colors cursor-pointer"
-                            onClick={() => signOut({ callbackUrl: "/login" })}
+                            onClick={() => handleAuthenticationButtonClick()}
+                            disabled={disabled}
                         >
                             Sign Out
                         </button>
                     </div>
                 ) : (
-                    <Link
-                        href="/login"
-                        className="text-sm bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 font-bold transition-colors"
+                    <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={() => handleAuthenticationButtonClick()}
+                        disabled={disabled}
                     >
-                        Login
-                    </Link>
+                        Sign In
+                    </button>
                 )}
             </nav>
         </header>
