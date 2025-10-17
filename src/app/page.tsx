@@ -98,9 +98,6 @@ export default function Home() {
       });
       const data = await response.json();
 
-      console.log('Response status:', response.status);
-      console.log('Response data:', data);
-
       if (!response.ok) {
         throw new Error(data.error || 'Failed to get random recipe');
       }
@@ -160,7 +157,6 @@ export default function Home() {
             onCapture={handleCameraCapture}
           />
 
-          {/* Add flex and justify-center to center the ImageCanva */}
           <div className="flex justify-center items-center space-x-2">
             <ImageCanva
               capturedImage={gallery.capturedImage}
@@ -170,7 +166,6 @@ export default function Home() {
             />
           </div>
 
-          {/* Add flex and justify-center to center the analyzing message */}
           {isAnalyzing && (
             <div className="flex justify-center items-center space-x-2">
               <LoadingSpinner />

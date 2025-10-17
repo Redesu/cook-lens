@@ -1,61 +1,41 @@
-'use client';
-import { use, useEffect, useState } from "react";
 import { Recipe, sampleRecipes } from "@/lib/mockData";
 import getDifficultyColor from "@/utils/getDifficultyColor";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { notFound } from "next/navigation";
 
-export default function savedRecipePage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
-    const [loading, setLoading] = useState(true);
+async function getRecipe(id: string): Promise<Recipe> {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/saved_recipe/${id}`, {
+        cache: 'no-store'
+    })
 
-    const loadRecipeById = async (id: string) => {
-        setLoading(true);
-        try {
-            const response = await fetch('/api/saved_recipe?id=' + id, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to get recipe');
-            }
-
-            const data = await response.json();
-            setRecipe(data[0]);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+    if (!response.ok) {
+        notFound();
     }
 
-    useEffect(() => {
-        loadRecipeById(id);
-    }, [id]);
+    const data: Recipe[] = await response.json();
+    return data[0];
+}
+
+
+export default async function savedRecipePage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const recipe = await getRecipe(id);
 
     return (
         <div className="min-h-screen flex items-center justify-center text-white">
             <main className="flex-1 p-4 sm:p-6 max-w-7xl mx-auto w-full">
-                {loading ? (
-                    <div className="flex flex-col items-center space-y-4">
-                        <LoadingSpinner />
-                        <p className="text-center text-lg text-gray-400">Loading recipe...</p>
-                    </div>
-                ) : !recipe ? (
+                {!recipe ? (
                     <p className="text-center text-lg text-gray-400">Recipe not found</p>
                 ) : (
                     <div
                         className="
-                        bg-gray-800 
-                        rounded-3xl 
-                        shadow-2xl 
-                        border border-gray-700 
-                        overflow-hidden
-                        transition-all duration-500
-                    "
+                    bg-gray-800 
+                    rounded-3xl 
+                    shadow-2xl 
+                    border border-gray-700 
+                    overflow-hidden
+                    transition-all duration-500
+                "
                     >
                         <div className="relative h-64 sm:h-80 bg-gray-700">
                             <img
@@ -68,12 +48,11 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
 
                         <div className="p-6 sm:p-10">
                             <div className="flex justify-between items-start mb-6">
-                                <h1 className="text-4xl sm:text-5xl font-extrabold text-indigo-400 leading-tight">
+                                <h1 className="text-4xl sm:text-5xl font-extrabold text-emerald-400 leading-tight">
                                     {recipe.title}
                                 </h1>
                                 <p>
-                                    Difficulty:<span className={`font-semibold ml-1  ${getDifficultyColor(recipe.difficulty)}}`
-                                    }>
+                                    Difficulty:<span className={`font-semibold ml-1 ${getDifficultyColor(recipe.difficulty)}`}>
                                         {recipe.difficulty}
                                     </span>
                                 </p>
@@ -101,20 +80,18 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
                                         <span className="text-2xl font-bold text-white">{recipe.cook_time} min</span>
                                         <span className="text-xs text-gray-400">Cook Time</span>
                                     </div>
-
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
                                 <div className="lg:col-span-1">
-                                    <h2 className="text-3xl font-bold mb-4 border-b border-gray-700 pb-2 text-indigo-300">
+                                    <h2 className="text-3xl font-bold mb-4 border-b border-gray-700 pb-2 text-emerald-300">
                                         Ingredients ({recipe.servings} Servings)
                                     </h2>
                                     <ul className="space-y-3">
-                                        {recipe.ingredients.map((item, index) => (
+                                        {recipe.ingredients.map((item: string, index: number) => (
                                             <li key={index} className="flex items-start text-gray-300 text-base">
-                                                <svg className="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <svg className="w-5 h-5 text-emerald-400 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 14.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
                                                 </svg>
                                                 {item}
@@ -124,7 +101,7 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
                                 </div>
 
                                 <div className="lg:col-span-2">
-                                    <h2 className="text-3xl font-bold mb-4 border-b border-gray-700 pb-2 text-indigo-300">
+                                    <h2 className="text-3xl font-bold mb-4 border-b border-gray-700 pb-2 text-emerald-300">
                                         Preparation Instructions
                                     </h2>
                                     <ol className="space-y-5">
@@ -134,7 +111,7 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
                                             .filter(step => step.length > 0)
                                             .map((step, index) => (
                                                 <li key={index} className="flex items-start">
-                                                    <span className="flex items-center justify-center w-8 h-8 mr-4 text-lg font-bold rounded-full bg-indigo-600 text-white flex-shrink-0">
+                                                    <span className="flex items-center justify-center w-8 h-8 mr-4 text-lg font-bold rounded-full bg-emerald-600 text-white flex-shrink-0">
                                                         {index + 1}
                                                     </span>
                                                     <p className="text-gray-300 leading-relaxed pt-1">
@@ -144,14 +121,12 @@ export default function savedRecipePage({ params }: { params: Promise<{ id: stri
                                             ))}
                                     </ol>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 )}
             </main>
         </div>
-
     )
 
 }

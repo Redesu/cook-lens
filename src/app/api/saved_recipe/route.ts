@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     try {
         const data = await request.json();
         if (!userId) {
-            throw new Error("User ID is undefined");
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         const saveRecipe = await insertSaveRecipe(data.recipe_id, userId);
 
@@ -20,23 +20,9 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
     try {
-
-        const searchParams = new URL(request.url).searchParams;
-        const id = searchParams.get('id');
-
-        if (id) {
-            const recipes = await getSavedRecipe(id);
-
-            if (!recipes) {
-                return NextResponse.json('Saved recipe not found', { status: 404 });
-            }
-
-            return NextResponse.json(recipes.rows);
-        }
-
         const randomSavedRecipe = await getRandomSavedRecipe();
 
-        if (!randomSavedRecipe.rows || randomSavedRecipe.rows.length === 0) {
+        if (!randomSavedRecipe.rows || randomSavedRecipe.rows.length === 0 || !randomSavedRecipe.rows[0].id) {
             return NextResponse.json({ error: 'No saved recipes found' }, { status: 404 });
         }
 

@@ -88,9 +88,8 @@ export default function ResultsPage() {
             setIsSavingRecipe(false);
         }
     }
-
     return (
-        <div className="min-h-screen flex flex-coltext-white">
+        <div className="min-h-screen flex flex-col text-white">
             <main className="flex-1 p-6 max-w-6xl mx-auto w-full">
                 <h2 className="text-4xl text-center mb-8">
                     Recipe Ideas
@@ -112,18 +111,18 @@ export default function ResultsPage() {
                             <div
                                 key={recipe.id}
                                 className="
-                                bg-gray-800
-                                text-gray-100
-                                rounded-xl
-                                shadow-2xl
-                                p-6 
-                                border border-gray-700 
-                                hover:bg-gray-700 
-                                transition-all duration-300 
-                                flex flex-col
-                            "
+                            bg-gray-800
+                            text-gray-100
+                            rounded-xl
+                            shadow-2xl
+                            p-6 
+                            border border-gray-700 
+                            hover:bg-gray-700 
+                            transition-all duration-300 
+                            flex flex-col
+                        "
                             >
-                                <h3 className="text-2xl mb-3 text-indigo-400">
+                                <h3 className="text-2xl mb-3 text-emerald-400">
                                     {recipe.title}
                                 </h3>
 
@@ -133,7 +132,7 @@ export default function ResultsPage() {
                                     </p>
                                     <p>
                                         Difficulty:<span className={`font-semibold ml-1 
-                                        ${getDifficultyColor(recipe.difficulty)}}`
+                                    ${getDifficultyColor(recipe.difficulty)}}`
                                         }>
                                             {recipe.difficulty}
                                         </span>
@@ -160,9 +159,9 @@ export default function ResultsPage() {
                                 <div className="mt-4">
                                     {!session && <p className="text-sm text-red-400 mb-2 font-semibold">Please log in to save recipes.</p>}
                                     <button
-                                        className={`w-full bg-indigo-600 text-white py-2 rounded-lg text-lg font-semibold transition ${isSavingRecipe === recipe.id || !session
+                                        className={`w-full bg-emerald-600 text-white py-2 rounded-lg text-lg font-semibold transition ${isSavingRecipe === recipe.id || !session
                                             ? 'opacity-50 cursor-not-allowed'
-                                            : 'cursor-pointer hover:bg-indigo-700'
+                                            : 'cursor-pointer hover:bg-emerald-700'
                                             }`}
                                         onClick={() => saveRecipe(recipe)}
                                         disabled={!session || isSavingRecipe !== false}
