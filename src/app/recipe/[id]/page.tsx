@@ -1,3 +1,4 @@
+import ShareButton from "@/components/ShareButton";
 import { Recipe } from "@/lib/mockData";
 import getDifficultyColor from "@/utils/getDifficultyColor";
 import { notFound } from "next/navigation";
@@ -17,7 +18,6 @@ async function getRecipe(id: string): Promise<Recipe> {
 
 
 export default async function savedRecipePage({ params }: { params: Promise<{ id: string }> }) {
-    // TODO: Add share button (just copy link), edit image button on button
     const { id } = await params;
     const recipe = await getRecipe(id);
 
@@ -100,6 +100,7 @@ export default async function savedRecipePage({ params }: { params: Promise<{ id
                                     </ul>
                                 </div>
 
+
                                 <div className="lg:col-span-2">
                                     <h2 className="text-3xl font-bold mb-4 border-b border-gray-700 pb-2 text-emerald-300">
                                         Preparation Instructions
@@ -121,6 +122,7 @@ export default async function savedRecipePage({ params }: { params: Promise<{ id
                                             ))}
                                     </ol>
                                 </div>
+                                <ShareButton />
                             </div>
                         </div>
                     </div>

@@ -18,9 +18,9 @@ export function upsertUser(username: User['username'], email: User['email'], ava
 }
 
 export function getUserByEmail(email: User['email']) {
-    return db.query("SELECT * FROM users WHERE email = $1", [email]);
+    return db.query("SELECT username, email, avatar_url FROM users WHERE email = $1", [email]);
 }
 
 export function getUserById(id: User['id']) {
-    return db.query("SELECT * FROM users WHERE id = $1", [id]);
+    return db.query("SELECT username, email, avatar_url FROM users WHERE id = $1", [id]);
 }

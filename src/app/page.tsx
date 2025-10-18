@@ -211,7 +211,7 @@ export default function Home() {
         </button>
       </main>
 
-      <footer className="p-6 text-center">
+      <footer className="p-6 text-center mb-12">
         <p className="text-sm text-white-600">
           📸 Photo → 🤖 AI Analysis → 🍽️ 3-5 Recipes
         </p>

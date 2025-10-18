@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         }
 
         const prompt = `
-        Generate 3 recipes using at least one of the following ingredients: ${ingredients}
+        Generate 3 to 5 recipes using at least one of the following ingredients: ${ingredients}
 
         Return ONLY a JSON array in this exact format:
         [
