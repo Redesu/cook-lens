@@ -1,8 +1,10 @@
+import { useToast } from "@/contexts/ToastContext";
 import { UseFileUploadReturn } from "@/types/DTOs/useFileUploadReturn";
 import { ChangeEvent, useRef } from "react";
 
 export function useFileUpload(): UseFileUploadReturn {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { showToast } = useToast();
 
     const handleFileUpload = (e: ChangeEvent<HTMLInputElement>): Promise<string | null> => {
         return new Promise((resolve) => {
@@ -14,7 +16,7 @@ export function useFileUpload(): UseFileUploadReturn {
             }
 
             if (!file.type.startsWith('image/')) {
-                alert('Please select an image file.');
+                showToast('Please select an image file', 'error');
                 resolve(null);
                 return;
             }

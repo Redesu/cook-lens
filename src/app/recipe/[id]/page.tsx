@@ -39,7 +39,7 @@ export default async function savedRecipePage({ params }: { params: Promise<{ id
                     >
                         <div className="relative h-64 sm:h-80 bg-gray-700">
                             <img
-                                src="https://placehold.co/800x400/1F2937/D1D5DB?text=Recipe+Image"
+                                src={recipe.image_url || `https://placehold.co/800x400/1F2937/D1D5DB?text=${recipe.title}`}
                                 alt={recipe.title}
                                 className="w-full h-full object-cover"
                             />

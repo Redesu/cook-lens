@@ -1,3 +1,4 @@
+import { useToast } from "@/contexts/ToastContext";
 import { UseCameraReturn } from "@/types/DTOs/useCameraReturn";
 import { useRef, useState } from "react";
 
@@ -6,6 +7,7 @@ export function useCamera(): UseCameraReturn {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const streamRef = useRef<MediaStream | null>(null);
+    const { showToast } = useToast();
 
     const openCamera = async (): Promise<void> => {
         try {
@@ -22,7 +24,7 @@ export function useCamera(): UseCameraReturn {
             }, 1000);
         } catch (err) {
             const error = err as Error;
-            alert('Could not access the camera: ' + error.message);
+            showToast('Could not open camera', 'error');
         }
     };
 

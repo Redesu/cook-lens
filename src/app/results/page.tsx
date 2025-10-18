@@ -6,11 +6,13 @@ import getDifficultyColor from "@/utils/getDifficultyColor";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function ResultsPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { data: session } = useSession();
+    const { showToast } = useToast();
 
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ export default function ResultsPage() {
     const saveRecipe = async (recipe: Recipe) => {
         setError(null);
         if (!session) {
-            alert("Please log in to save recipes.");
+            showToast('You must be logged in to save a recipe', 'error');
             router.push("/login");
             return;
         }
@@ -111,63 +113,78 @@ export default function ResultsPage() {
                             <div
                                 key={recipe.id}
                                 className="
-                            bg-gray-800
-                            text-gray-100
-                            rounded-xl
-                            shadow-2xl
-                            p-6 
-                            border border-gray-700 
-                            hover:bg-gray-700 
-                            transition-all duration-300 
-                            flex flex-col
-                        "
+                                bg-gray-800
+                                text-gray-100
+                                rounded-xl
+                                shadow-2xl
+                                border border-gray-700 
+                                hover:bg-gray-700 
+                                transition-all duration-300 
+                                flex flex-col
+                                overflow-hidden
+                            "
                             >
-                                <h3 className="text-2xl mb-3 text-emerald-400">
-                                    {recipe.title}
-                                </h3>
+                                {/* Recipe Image */}
+                                {recipe.image_url && (
+                                    <div className="relative h-48 w-full overflow-hidden">
+                                        <img
+                                            src={recipe.image_url}
+                                            alt={recipe.title}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+                                    </div>
+                                )}
 
-                                <div className="space-y-1 mb-4 text-sm text-gray-300">
-                                    <p>
-                                        Cook Time: <span className="font-medium text-white">{recipe.cook_time} minutes</span>
-                                    </p>
-                                    <p>
-                                        Difficulty:<span className={`font-semibold ml-1 
-                                    ${getDifficultyColor(recipe.difficulty)}}`
-                                        }>
-                                            {recipe.difficulty}
+                                <div className="p-6 flex flex-col flex-1">
+                                    <h3 className="text-2xl mb-3 text-emerald-400">
+                                        {recipe.title}
+                                    </h3>
+
+                                    <div className="space-y-1 mb-4 text-sm text-gray-300">
+                                        <p>
+                                            Cook Time: <span className="font-medium text-white">{recipe.cook_time} minutes</span>
+                                        </p>
+                                        <p>
+                                            Difficulty:<span className={`font-semibold ml-1 
+                                            ${getDifficultyColor(recipe.difficulty)}}`
+                                            }>
+                                                {recipe.difficulty}
+                                            </span>
+                                        </p>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <p className="font-semibold text-gray-200 mb-1">
+                                            Ingredients:
+                                        </p>
+                                        <span className="text-sm text-gray-400 italic">
+                                            {recipe.ingredients.join(", ")}
                                         </span>
-                                    </p>
-                                </div>
+                                    </div>
 
-                                <div className="mb-4">
-                                    <p className="font-semibold text-gray-200 mb-1">
-                                        Ingredients:
-                                    </p>
-                                    <span className="text-sm text-gray-400 italic">
-                                        {recipe.ingredients.join(", ")}
-                                    </span>
-                                </div>
+                                    <div className="flex-1">
+                                        <p className="font-semibold text-gray-200 mb-1">
+                                            Instructions:
+                                        </p>
+                                        <p className="text-sm leading-relaxed text-gray-300">
+                                            {recipe.instructions}
+                                        </p>
+                                    </div>
 
-                                <div className="flex-1">
-                                    <p className="font-semibold text-gray-200 mb-1">
-                                        Instructions:
-                                    </p>
-                                    <p className="text-sm leading-relaxed text-gray-300">
-                                        {recipe.instructions}
-                                    </p>
-                                </div>
-                                <div className="mt-4">
-                                    {!session && <p className="text-sm text-red-400 mb-2 font-semibold">Please log in to save recipes.</p>}
-                                    <button
-                                        className={`w-full bg-emerald-600 text-white py-2 rounded-lg text-lg font-semibold transition ${isSavingRecipe === recipe.id || !session
-                                            ? 'opacity-50 cursor-not-allowed'
-                                            : 'cursor-pointer hover:bg-emerald-700'
-                                            }`}
-                                        onClick={() => saveRecipe(recipe)}
-                                        disabled={!session || isSavingRecipe !== false}
-                                    >
-                                        {isSavingRecipe === recipe.id ? 'Saving...' : 'Save Recipe'}
-                                    </button>
+                                    <div className="mt-4">
+                                        {!session && <p className="text-sm text-red-400 mb-2 font-semibold">Please log in to save recipes.</p>}
+                                        <button
+                                            className={`w-full bg-emerald-600 text-white py-2 rounded-lg text-lg font-semibold transition ${isSavingRecipe === recipe.id || !session
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : 'cursor-pointer hover:bg-emerald-700'
+                                                }`}
+                                            onClick={() => saveRecipe(recipe)}
+                                            disabled={!session || isSavingRecipe !== false}
+                                        >
+                                            {isSavingRecipe === recipe.id ? 'Saving...' : 'Save Recipe'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}

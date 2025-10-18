@@ -60,8 +60,8 @@ export default function Header() {
                                 className="w-8 h-8 rounded-full"
                             />
                         )}
-                        <Link href='/profile'>
-                            <span className="text-sm font-medium hover:underline cursor-pointer">
+                        <Link href='/profile' onClick={() => setDisabled(true)}>
+                            <span className={`text-sm font-medium hover:underline cursor-pointer`}>
                                 {session.user?.name || session.user?.email}
                             </span>
                         </Link>

@@ -1,4 +1,5 @@
 import { saveGeneratedRecipes } from "@/lib/ai";
+import fetchRecipeImage from "@/lib/pexels";
 import { requireAuth } from "@/utils/requireAuth";
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
@@ -29,7 +30,6 @@ export async function POST(request: Request) {
             "cookTime": 30,
             "servings": 4,
             "difficulty": "⭐⭐",
-            "image_url": "https://example.com/image.jpg"
             }
         ]
         `;
@@ -63,8 +63,15 @@ export async function POST(request: Request) {
         const cleanedText = aiText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         const parsedRecipes = JSON.parse(cleanedText);
 
+        const recipesWithImages = await Promise.all(
+            parsedRecipes.map(async (recipe: any) => {
+                const image_url = await fetchRecipeImage(recipe.title);
+                return { ...recipe, image_url };
+            })
+        )
+
         if (userId) {
-            const savedRecipes = await saveGeneratedRecipes(parsedRecipes, userId);
+            const savedRecipes = await saveGeneratedRecipes(recipesWithImages, userId);
 
             if (!savedRecipes) {
                 throw new Error('Failed to save recipes');
@@ -75,7 +82,7 @@ export async function POST(request: Request) {
             });
         } else {
             return NextResponse.json({
-                recipes: parsedRecipes.map((recipe: any, index: number) => ({
+                recipes: recipesWithImages.map((recipe: any, index: number) => ({
                     id: `temp-${Date.now()}-${index}`,
                     ...recipe
                 }))

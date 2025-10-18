@@ -1,5 +1,5 @@
 import db from "@/lib/db";
-import { SavedRecipe, User } from "@/types";
+import { User } from "@/types";
 
 export function insertSaveRecipe(recipe_id: string, user_id: User['id']) {
     return db.query(
