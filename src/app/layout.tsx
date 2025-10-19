@@ -29,7 +29,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased vsc-initialized`}
       >
-
         <Providers>
           <Header />
           {children}

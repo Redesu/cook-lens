@@ -9,6 +9,7 @@ import OpenCameraModal from "@/components/OpenCameraModal";
 import ImageCanva from "@/components/ImageCanva";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useToast } from "@/contexts/ToastContext";
+import InstallPrompt from "@/components/InstallPrompt";
 
 export default function Home() {
   const router = useRouter();
@@ -216,6 +217,8 @@ export default function Home() {
           See sample recipe →
         </button>
       </main>
+
+      <InstallPrompt />
     </div>
   )
 }

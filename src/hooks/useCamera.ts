@@ -23,6 +23,7 @@ export function useCamera(): UseCameraReturn {
                 }
             }, 1000);
         } catch (err) {
+            console.error(err);
             showToast('Could not open camera', 'error');
         }
     };
