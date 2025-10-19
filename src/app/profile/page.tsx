@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { Bookmark, CalendarDays, ChefHat, Clock, Mail } from "lucide-react";
 import RecipeCard from "@/components/RecipeCard";
+import Image from "next/image";
 
 async function getUserInfo(userId: string): Promise<UserData> {
 
@@ -44,9 +45,11 @@ export default async function Profile() {
             <div className="max-w-7xl mx-auto p-6">
                 <div className="rounded-lg shadow-sm p-8 mb-6">
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                        <img
-                            src={userInfo.avatar_url}
+                        <Image
+                            src={userInfo.avatar_url || '/default-avatar.jpg'}
                             alt="User avatar"
+                            width={350}
+                            height={350}
                             className="w-24 h-24 rounded-full border-4 border-blue-600"
                         />
                         <div className="flex-1 text-center md:text-left">

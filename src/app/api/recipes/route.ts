@@ -1,4 +1,4 @@
-import { getAllRecipes, getRecipeById, insertRecipe } from "@/lib/queries";
+import { insertRecipe } from "@/lib/queries";
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/utils/requireAuth";
 

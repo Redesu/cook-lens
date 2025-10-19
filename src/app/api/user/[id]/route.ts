@@ -1,10 +1,7 @@
 import { getAllUserSavedRecipes, getUserById, getUserGeneratedRecipes } from "@/lib/queries";
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions } from "../../auth/[...nextauth]/route";
-import { getToken } from "next-auth/jwt";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
     try {
         const { id } = await params;
 

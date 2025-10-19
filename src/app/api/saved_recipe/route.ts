@@ -1,4 +1,4 @@
-import { getRandomSavedRecipe, getSavedRecipe, insertSaveRecipe } from "@/lib/queries";
+import { getRandomSavedRecipe, insertSaveRecipe } from "@/lib/queries";
 import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
         const randomSavedRecipe = await getRandomSavedRecipe();
 

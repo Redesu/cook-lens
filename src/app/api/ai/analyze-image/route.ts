@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GenerateContentParameters, GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_KEY });
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
         const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
 
-        const contents: any = [
+        const contents: GenerateContentParameters['contents'] = [
             {
                 role: 'user',
                 parts: [
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
                         },
                     },
                     {
-                        text: `Extract the ingredients from the image and return them as a comma separated list.`
+                        text: `Extract the ingredients from the image and return them as a comma separated list. If the image does not contain any cookable ingredients, return an empty list.`,
                     }
                 ]
             }

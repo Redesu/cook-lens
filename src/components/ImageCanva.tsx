@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface ImageCanvasProps {
     capturedImage: string | null,
@@ -27,8 +28,10 @@ export default function ImageCanva({
                             <X size={20} />
                         </button>
                     </div>
-                    <img
+                    <Image
                         src={capturedImage}
+                        width={400}
+                        height={400}
                         alt="Captured"
                         className="w-full rounded-lg"
                     />
@@ -46,8 +49,10 @@ export default function ImageCanva({
                             <X size={20} />
                         </button>
                     </div>
-                    <img
+                    <Image
                         src={uploadedImage}
+                        width={400}
+                        height={400}
                         alt="Uploaded"
                         className="w-full rounded-lg"
                     />

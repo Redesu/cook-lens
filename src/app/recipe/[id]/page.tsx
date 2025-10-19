@@ -1,6 +1,7 @@
 import ShareButton from "@/components/ShareButton";
 import { Recipe } from "@/lib/mockData";
 import getDifficultyColor from "@/utils/getDifficultyColor";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 async function getRecipe(id: string): Promise<Recipe> {
@@ -38,9 +39,10 @@ export default async function savedRecipePage({ params }: { params: Promise<{ id
                 "
                     >
                         <div className="relative h-64 sm:h-80 bg-gray-700">
-                            <img
+                            <Image
                                 src={recipe.image_url || `https://placehold.co/800x400/1F2937/D1D5DB?text=${recipe.title}`}
                                 alt={recipe.title}
+                                fill
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>

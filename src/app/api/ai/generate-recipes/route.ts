@@ -1,5 +1,6 @@
 import { saveGeneratedRecipes } from "@/lib/ai";
 import fetchRecipeImage from "@/lib/pexels";
+import { Recipe } from "@/types";
 import { requireAuth } from "@/utils/requireAuth";
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
@@ -26,8 +27,8 @@ export async function POST(request: Request) {
             "description": "Short description",
             "ingredients": ["ingredient 1", "ingredient 2"],
             "instructions": "You add x. After that you mix y. Then you cook z.",
-            "prepTime": 15,
-            "cookTime": 30,
+            "prep_time": 15,
+            "cook_time": 30,
             "servings": 4,
             "difficulty": "⭐⭐",
             }
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
         const parsedRecipes = JSON.parse(cleanedText);
 
         const recipesWithImages = await Promise.all(
-            parsedRecipes.map(async (recipe: any) => {
+            parsedRecipes.map(async (recipe: Recipe) => {
                 const image_url = await fetchRecipeImage(recipe.title);
                 return { ...recipe, image_url };
             })
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
             });
         } else {
             return NextResponse.json({
-                recipes: recipesWithImages.map((recipe: any, index: number) => ({
+                recipes: recipesWithImages.map((recipe: Recipe[], index: number) => ({
                     id: `temp-${Date.now()}-${index}`,
                     ...recipe
                 }))

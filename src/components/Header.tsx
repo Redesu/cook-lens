@@ -1,5 +1,6 @@
 'use client'
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -54,8 +55,10 @@ export default function Header() {
                 ) : session ? (
                     <div className="flex items-center gap-3">
                         {session.user?.image && (
-                            <img
+                            <Image
                                 src={session.user.image}
+                                width={32}
+                                height={32}
                                 alt={session.user.name || "User"}
                                 className="w-8 h-8 rounded-full"
                             />
@@ -66,7 +69,7 @@ export default function Header() {
                             </span>
                         </Link>
                         <button
-                            className="bg-red-500 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-600 transition-colors cursor-pointer"
+                            className="bg-red-500 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => handleAuthenticationButtonClick()}
                             disabled={disabled}
                         >

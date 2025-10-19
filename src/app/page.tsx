@@ -4,17 +4,20 @@ import { useRouter } from "next/navigation"
 import { useCamera } from "@/hooks/useCamera";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useImageGallery } from "@/hooks/useImageGallery";
-import { CameraIcon, UploadIcon, X } from "lucide-react";
+import { CameraIcon, UploadIcon } from "lucide-react";
 import OpenCameraModal from "@/components/OpenCameraModal";
 import ImageCanva from "@/components/ImageCanva";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function Home() {
   const router = useRouter();
+  const { showToast } = useToast();
+
   const [ingredients, setIngredients] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isLoadingRandomRecipe, setIsLoadingRandomRecipe] = useState(false)
-  const [error, setError] = useState<String | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const ingredientsInputRef = useRef<HTMLInputElement>(null);
 
@@ -59,6 +62,9 @@ export default function Home() {
       }
 
       const data = await response.json();
+      if (data.ingredients.length === 0) {
+        showToast('No ingredients found in the image', 'error');
+      }
       setIngredients(data.ingredients);
 
       setTimeout(() => {
@@ -210,12 +216,6 @@ export default function Home() {
           See sample recipe →
         </button>
       </main>
-
-      <footer className="p-6 text-center mb-12">
-        <p className="text-sm text-white-600">
-          📸 Photo → 🤖 AI Analysis → 🍽️ 3-5 Recipes
-        </p>
-      </footer>
     </div>
   )
 }

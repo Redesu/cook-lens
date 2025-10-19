@@ -2,7 +2,7 @@ import { getRecipeById } from "@/lib/queries";
 import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
     const userId = await requireAuth();
     try {
         if (!userId) {
