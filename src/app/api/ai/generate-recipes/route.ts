@@ -44,7 +44,7 @@ export async function POST(request: Request) {
                 - Generate practical, cookable recipes
                 - Return ONLY valid JSON array format with NO markdown, NO code blocks, NO backticks
                 - Start your response directly with [ and end with ]
-                Each recipe must include: title, description, ingredients (array), instructions, prepTime, cookTime, servings, difficulty, and image_url (optional).`
+                Each recipe must include: title, description, ingredients (array), instructions, prep_time, cook_time, servings, difficulty, and image_url (optional).`
             },
             contents: [
                 {
