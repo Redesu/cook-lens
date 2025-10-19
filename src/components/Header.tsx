@@ -13,6 +13,13 @@ export default function Header() {
         signOut({ callbackUrl: "/login" });
     };
 
+    const handleLoadingProfileButtonClick = () => {
+        setDisabled(true);
+        setTimeout(() => {
+            setDisabled(false);
+        }, 2000);
+    };
+
     return (
         <header className="p-4 flex justify-between items-center">
             <h1 className="text-xl font-bold">
@@ -63,7 +70,7 @@ export default function Header() {
                                 className="w-8 h-8 rounded-full"
                             />
                         )}
-                        <Link href='/profile' onClick={() => setDisabled(true)}>
+                        <Link href='/profile' onClick={() => handleLoadingProfileButtonClick()}>
                             <span className={`text-sm font-medium hover:underline cursor-pointer`}>
                                 {session.user?.name || session.user?.email}
                             </span>
