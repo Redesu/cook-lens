@@ -4,7 +4,7 @@
 
 A full-stack tech blog built with **NextJS**, **Tailwind**, **Gemini** and **PostgreSQL**.
 
-## You can find a live version [HERE]()
+## You can find a live version [HERE](https://cooklens.redesu.com.br/)
 ---
 
 ## Features
