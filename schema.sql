@@ -6,7 +6,7 @@ CREATE TABLE users (
 	created_at TIMESTAMP NOT NULL,
 	updated_at TIMESTAMP,
 	CONSTRAINT users_email_unique UNIQUE (email)
-)
+);
 
 CREATE TABLE recipes (
 	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -26,7 +26,7 @@ CREATE TABLE recipes (
 		REFERENCES users (id)
 		ON DELETE CASCADE
 		ON UPDATE NO ACTION
-)
+);
 
 CREATE TABLE saved_recipes (
 	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -46,5 +46,5 @@ CREATE TABLE saved_recipes (
 		ON DELETE CASCADE
 		ON UPDATE NO ACTION
 		
-)
+);
 
