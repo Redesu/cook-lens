@@ -94,7 +94,7 @@ export default function ResultsClient() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col text-white">
+        <div className="min-h-screen flex flex-col">
             <main className="flex-1 p-6 max-w-6xl mx-auto w-full">
                 <h2 className="text-4xl text-center mb-8">
                     Recipe Ideas
