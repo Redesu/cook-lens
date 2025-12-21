@@ -18,6 +18,7 @@ setup("seed database and authenticate", async ({ page }) => {
     `
   INSERT INTO recipes (user_id, title, description, ingredients, instructions, prep_time, cook_time, servings, difficulty, created_at) VALUES
   ($1, 'Test Recipe', 'This is a test recipe.', $2, 'Step 1, Step 2', 10, 20, 2, '⭐', CURRENT_TIMESTAMP)
+  ON CONFLICT DO NOTHING
   RETURNING id`,
     [userId, JSON.stringify(["Ingredient 1", "Ingredient 2"])]
   );
