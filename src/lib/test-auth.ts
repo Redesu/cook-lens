@@ -4,7 +4,7 @@ export async function createTestSession(userId: string) {
   const token = {
     id: userId,
     email: "test@test.com",
-    name: "Test User",
+    name: "testuser",
     picture: null,
   };
 
