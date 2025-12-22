@@ -8,6 +8,6 @@ test("generate a recipe", async ({ page }) => {
     .fill("chicken, rice, broccoli");
   await page.getByRole("button", { name: "Generate Recipe" }).click();
   await page.waitForURL("**/results*");
-  await expect(page.getByRole("heading", { name: "Recipe Ideas" }));
-  await expect(await page.locator("div").nth(5));
+  await expect(page.getByRole("heading", { name: "Recipe Ideas" })).toBeVisible();
+  await expect(page.locator("div").nth(5)).toBeVisible();
 });

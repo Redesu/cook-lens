@@ -7,7 +7,7 @@ test("save a recipe", async ({ page }) => {
     .getByRole("textbox", { name: "Type ingredients (e.g.," })
     .fill("chicken, rice, broccoli");
   await page.getByRole("button", { name: "Generate Recipe" }).click();
-  await page.waitForURL("**/recipe/*");
+  await page.waitForURL("**/results*");
   await page.getByRole("button", { name: "Save Recipe" }).first().click();
   await page.waitForURL("**/recipe/*");
   expect(page.url()).toMatch(/\/recipe\//);
