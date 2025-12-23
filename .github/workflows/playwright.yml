@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
+      - name: Install PostgreSQL Client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - name: Run schema
         env:
           PGPASSWORD: testpass
@@ -46,11 +48,17 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
+          NEXT_PUBLIC_API_URL: http://localhost:3000/api
+          NEXTAUTH_URL: http://localhost:3000
+          NEXT_AUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NODE_ENV: development
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USER: testuser
           DB_PASSWORD: testpass
           DB_NAME: cook-lens_test
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
